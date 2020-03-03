@@ -5,38 +5,57 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     public GameObject enemy;
+    public float speed;
     public int[,] Grid;
     int Columns, Rows;
     bool right, left;
     Vector3 initPosition;
     void Start()
     {
+        speed = 0.5f;
         initPosition = transform.position;
+        
+    }
+
+    public void CreateGrid()
+    {
         StartCoroutine(MakeGrid());
     }
 
     void Update()
     {
-
-        if (right)
+        if (transform.childCount > 0)
         {
-            StartCoroutine(MovingRight());
+            if (right)
+            {
+                StartCoroutine(MovingRight());
+            }
+            if (left)
+            {
+                StartCoroutine(MovingLeft());
+            }
         }
-        if (left)
+        else
         {
-            StartCoroutine(MovingLeft());
+            transform.position = initPosition;
+            StopAllCoroutines();
+            StartCoroutine(MakeGrid());
+            speed -= 0.05f;
         }
     }
 
     IEnumerator MovingRight()
     {
         right = false;
-        for (float i = transform.position.x; i <= 4; i+=0.2f)
+        for (float i = transform.position.x; i <= 4; i += 0.2f)
         {
-            transform.position = new Vector3(i, transform.position.y);
-            yield return new WaitForSeconds(0.5f);
+
+                transform.position = new Vector3(i, transform.position.y);
+                yield return new WaitForSeconds(speed);
+
+            
         }
-        transform.position += new Vector3(0, - 0.5f);
+        transform.position += new Vector3(0, -0.5f);
         left = true;
     }
     IEnumerator MovingLeft()
@@ -44,16 +63,20 @@ public class EnemyManager : MonoBehaviour
         left = false;
         for (float i = transform.position.x; i >= -4; i -= 0.2f)
         {
-            transform.position = new Vector3(i, transform.position.y);
-            yield return new WaitForSeconds(0.5f);
+                transform.position = new Vector3(i, transform.position.y);
+                yield return new WaitForSeconds(speed);
+            
+
         }
         transform.position += new Vector3(0, -0.5f);
         right = true;
     }
 
 
-    IEnumerator MakeGrid()
+    public IEnumerator MakeGrid()
     {
+        right = false;
+        left = false;
         Columns = 10;
         Rows = 4;
         Grid = new int[Columns, Rows];
@@ -63,7 +86,7 @@ public class EnemyManager : MonoBehaviour
             {
                 Grid[i, j] = Random.Range(0, 10);
                 SpawnEnemies(i, j, Grid[i, j]);
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.03f);
             }
         }
         right = true;

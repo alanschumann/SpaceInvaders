@@ -5,34 +5,72 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    EnemyManager enemyManager;
-    Player player;
+    [SerializeField] EnemyManager enemyManager;
+    [SerializeField] Player player;
+    [SerializeField] StartButton startButton;
+    [SerializeField] ExitButton exitButton;
+    public GameObject panelInGameGO, startButtonGO, quitButtonGO, enemyManagerGO;
     public Text scoreCanvas;
     public Image lifeCanvas;
+
 
     public int score;
     public int life;
     void Start()
     {
-        enemyManager = FindObjectOfType<EnemyManager>();
-        player = FindObjectOfType<Player>();
+        Cursor.visible = false;
+        startButtonGO.SetActive(true);
+        quitButtonGO.SetActive(true);
+        panelInGameGO.SetActive(false);
+        enemyManagerGO.SetActive(false);
     }
 
     void Update()
     {
+        if (startButtonGO)
+        {
+            if (startButton.canStart)
+            {
+                initGame();
+            }
+        }
+
+        if (quitButtonGO)
+        {
+            if (exitButton.canExit)
+            {
+                Application.Quit();
+            }
+        }
+
+
+
         Score();
         Life();
     }
 
+
+
+    void initGame()
+    {
+        enemyManagerGO.SetActive(true);
+        panelInGameGO.SetActive(true);
+        quitButtonGO.SetActive(false);
+        startButtonGO.SetActive(false);
+        enemyManager.CreateGrid();
+        startButton.canStart = false;
+    }
+
+
+
     void Score()
     {
-        scoreCanvas.text = ("Score: "+score);
+        scoreCanvas.text = ("Score: " + score);
     }
 
     void Life()
     {
         life = player.life;
-        print(life);
         if (life == 3)
         {
             lifeCanvas.fillAmount = 1;

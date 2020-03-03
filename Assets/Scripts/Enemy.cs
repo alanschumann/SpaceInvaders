@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
+
     private void Start()
     {
         isDetectable = true;
@@ -49,6 +50,10 @@ public class Enemy : MonoBehaviour
             isDetectable = false;
             life--;
             DestroyEnemyFunc();
+        }
+        else
+        {
+            print("Shtoo");
         }
 
     }
@@ -151,10 +156,7 @@ public class Enemy : MonoBehaviour
             }
 
         }
-        else
-        {
-            Debug.Log("No se encontro amigo");
-        }
+        
         isDetectable = true;
     }
 
