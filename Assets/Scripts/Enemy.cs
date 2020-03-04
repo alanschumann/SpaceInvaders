@@ -7,8 +7,10 @@ public class Enemy : MonoBehaviour
     public float life;
     int typeOfEnemy;
     public bool isDetectable;
+    public GameObject bullet;
     Animator animator;
     float points;
+    bool canShoot;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -40,6 +42,8 @@ public class Enemy : MonoBehaviour
             this.gameObject.name = "Blue";
             life = 1;
         }
+
+        StartCoroutine(EnableShoot());
     }
 
 
@@ -51,13 +55,16 @@ public class Enemy : MonoBehaviour
             life--;
             DestroyEnemyFunc();
         }
-        else
-        {
-            print("Shtoo");
-        }
 
     }
 
+    private void Update()
+    {
+        if (canShoot)
+        {
+            StartCoroutine(ShootAtPlayer());
+        }
+    }
 
 
 
@@ -72,9 +79,40 @@ public class Enemy : MonoBehaviour
 
     }
 
+
+    IEnumerator EnableShoot()
+    {
+        float time = Random.Range(3, 8);
+        yield return new WaitForSeconds(time);
+        canShoot = true;
+    }
+    IEnumerator ShootAtPlayer()
+    {
+        float time = Random.Range(1, 4);
+        canShoot = false;
+
+        RaycastHit2D hitDown = Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y - 0.35f), -transform.up, 0.6f);
+        if (!hitDown)
+        {
+            SpawnBullet();
+        }
+
+        yield return new WaitForSeconds(time);
+        canShoot = true;
+    }
+
+    void SpawnBullet()
+    {
+        float velocity = Random.Range(-200, -100);
+        GameObject newBala = Instantiate(bullet, new Vector3(transform.position.x, transform.position.y - 0.5f), Quaternion.identity);
+        Bullet controlBullet = newBala.GetComponent<Bullet>();
+        controlBullet.destroyTime = 4;
+        controlBullet.velocity = velocity;
+    }
+
     public IEnumerator DestroyEnemy()
     {
-        
+
         animator.SetTrigger("Death");
         yield return new WaitForSeconds(1f);
         if (this.gameObject.name == "Red")
@@ -156,7 +194,7 @@ public class Enemy : MonoBehaviour
             }
 
         }
-        
+
         isDetectable = true;
     }
 

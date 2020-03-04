@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bullet :MonoBehaviour, IBullet
 {
     public float velocity;
+    public float destroyTime;
     private Rigidbody2D rb2d;
     private void Awake()
     {
@@ -25,7 +26,7 @@ public class Bullet :MonoBehaviour, IBullet
 
     IEnumerator DestroyOnTime()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(destroyTime);
         Destroy(this.gameObject);
     }
 }

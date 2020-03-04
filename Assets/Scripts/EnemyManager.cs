@@ -34,6 +34,10 @@ public class EnemyManager : MonoBehaviour
             {
                 StartCoroutine(MovingLeft());
             }
+            if (transform.position.y <= -3)
+            {
+                transform.position = initPosition;
+            }
         }
         else
         {
